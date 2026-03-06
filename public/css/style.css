@@ -1,14 +1,16 @@
 :root {
-  --gold: #f5c518;
-  --accent: #ff6b35;
+  --gold: #F5C518;
+  --accent: #FF6B35;
   --dark: #0a0a0f;
   --dark2: #12121a;
   --card: #1a1a28;
-  --card2: #22223a;
+  --card2: #222235;
   --text: #e8e8f0;
   --muted: #888899;
   --green: #2ecc71;
   --red: #e74c3c;
+  --company-gold: linear-gradient(135deg, #F5C518, #FFB800);
+  --company-shadow: 0 8px 32px rgba(245, 197, 24, 0.15);
 }
 
 *,
@@ -31,15 +33,17 @@ body {
     BlinkMacSystemFont,
     "Segoe UI",
     sans-serif;
-  background: radial-gradient(
-    circle at top,
-    #14141f 0,
-    var(--dark) 45%,
-    #050509 100%
-  );
+  background: linear-gradient(rgba(10, 10, 15, 0.7), rgba(10, 10, 15, 0.75)), 
+              url('/company-bg.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--text);
   min-height: 100vh;
   direction: rtl;
+  margin: 0;
+  padding: 0;
+  position: relative;
 }
 
 .page-shell {
@@ -131,12 +135,10 @@ h1 {
 }
 
 .card {
-  background: radial-gradient(
-    circle at top,
-    #26263a 0,
-    var(--card) 40%,
-    #151520 100%
-  );
+  background: radial-gradient(circle at top,
+      #26263a 0,
+      var(--card) 40%,
+      #151520 100%);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   padding: 18px 18px 20px;
@@ -156,18 +158,16 @@ h1 {
   pointer-events: none;
 }
 
-.card > * {
+.card>* {
   position: relative;
   z-index: 1;
 }
 
 .card-side {
-  background: radial-gradient(
-    circle at bottom,
-    #26263a 0,
-    var(--card2) 40%,
-    #151520 100%
-  );
+  background: radial-gradient(circle at bottom,
+      #26263a 0,
+      var(--card2) 40%,
+      #151520 100%);
 }
 
 .info-card h3,
@@ -291,11 +291,9 @@ select.input {
 
 .type-card.active {
   border-color: rgba(245, 197, 24, 0.8);
-  background: linear-gradient(
-    135deg,
-    rgba(245, 197, 24, 0.2),
-    rgba(255, 107, 53, 0.18)
-  );
+  background: linear-gradient(135deg,
+      rgba(245, 197, 24, 0.2),
+      rgba(255, 107, 53, 0.18));
   box-shadow: 0 0 0 1px rgba(245, 197, 24, 0.4);
   transform: translateY(-1px);
 }
@@ -593,11 +591,9 @@ select.input {
 .locked-overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(
-    circle at top,
-    rgba(20, 20, 35, 0.85),
-    rgba(0, 0, 0, 0.92)
-  );
+  background: radial-gradient(circle at top,
+      rgba(20, 20, 35, 0.85),
+      rgba(0, 0, 0, 0.92));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -607,12 +603,10 @@ select.input {
 .locked-card {
   max-width: 420px;
   padding: 20px 18px;
-  background: radial-gradient(
-    circle at top,
-    #26263a 0,
-    var(--card) 40%,
-    #151520 100%
-  );
+  background: radial-gradient(circle at top,
+      #26263a 0,
+      var(--card) 40%,
+      #151520 100%);
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 26px 70px rgba(0, 0, 0, 0.9);
@@ -704,7 +698,7 @@ select.input {
   gap: 16px;
 }
 
-.admin-section + .admin-section {
+.admin-section+.admin-section {
   margin-top: 16px;
 }
 
@@ -920,10 +914,12 @@ select.input {
 }
 
 @keyframes pulse {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.4;
   }
@@ -1026,12 +1022,10 @@ select.input {
   max-width: 380px;
   padding: 22px 20px;
   border-radius: 20px;
-  background: radial-gradient(
-    circle at top,
-    #26263a 0,
-    var(--card) 45%,
-    #151520 100%
-  );
+  background: radial-gradient(circle at top,
+      #26263a 0,
+      var(--card) 45%,
+      #151520 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.95);
   text-align: center;
@@ -1076,11 +1070,9 @@ select.input {
 .comp-lock-overlay {
   position: fixed;
   inset: 0;
-  background: radial-gradient(
-    circle at top,
-    rgba(20, 20, 35, 0.9),
-    rgba(0, 0, 0, 0.96)
-  );
+  background: radial-gradient(circle at top,
+      rgba(20, 20, 35, 0.9),
+      rgba(0, 0, 0, 0.96));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1091,12 +1083,10 @@ select.input {
   max-width: 420px;
   padding: 22px 20px;
   border-radius: 20px;
-  background: radial-gradient(
-    circle at top,
-    #26263a 0,
-    var(--card) 45%,
-    #151520 100%
-  );
+  background: radial-gradient(circle at top,
+      #26263a 0,
+      var(--card) 45%,
+      #151520 100%);
   border: 1px solid rgba(255, 255, 255, 0.12);
   text-align: center;
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.95);
@@ -1112,6 +1102,7 @@ select.input {
     opacity: 0;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1122,6 +1113,7 @@ select.input {
   from {
     box-shadow: 0 0 0 0 rgba(245, 197, 24, 0.4);
   }
+
   to {
     box-shadow: 0 0 0 8px rgba(245, 197, 24, 0);
   }
@@ -1132,6 +1124,7 @@ select.input {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1359,4 +1352,174 @@ select.input {
   .admin-table td {
     padding: 6px;
   }
+}/* --- iCareer Theme Additions --- */
+
+/* Removed body.index-page as it's now merged into body */
+
+.glass-card {
+  background: rgba(26, 26, 40, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 215, 0, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 50%, 
+              rgba(255, 215, 0, 0.05) 0%, 
+              transparent 70%);
+  animation: glowPulse 4s infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container, .header-container, .content-grid {
+  position: relative;
+  z-index: 1;
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: rgba(10, 10, 15, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* زيادة المسافة */
+}
+
+.company-logo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #F5C518;
+  transition: transform 0.3s ease;
+  box-shadow: 0 0 15px rgba(245, 197, 24, 0.3); /* إضافة ظل ذهبي */
+}
+
+.company-logo:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 0 25px rgba(245, 197, 24, 0.5);
+}
+
+.company-name {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #F5C518, #FF6B35);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(245, 197, 24, 0.3);
+  border-color: #F5C518;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: rotate(30deg);
+  transition: transform 0.6s;
+}
+
+.card:hover::after {
+  transform: rotate(30deg) translate(10%, 10%);
+}
+
+.hero-section {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.hero-title {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.gradient-text {
+  background: var(--company-gold);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.white-text {
+  color: #fff;
+}
+
+.hero-subtitle {
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
 }
