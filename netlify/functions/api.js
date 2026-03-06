@@ -5,6 +5,11 @@ const { createClient } = require('@supabase/supabase-js');
 const multer = require('multer');
 const path = require('path');
 
+// Load environment variables for local development
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -52,8 +57,8 @@ function calculatePoints(registrationTypes) {
     return { type: 'none', points: 0 };
 }
 
-// POST /submit — Save new submission + upload screenshots to Supabase Storage
-app.post('/submit', upload.array('screenshots'), async (req, res) => {
+// POST /api/submit — Save new submission + upload screenshots to Supabase Storage
+app.post('/api/submit', upload.array('screenshots'), async (req, res) => {
     try {
         const {
             name,
@@ -168,8 +173,8 @@ app.post('/submit', upload.array('screenshots'), async (req, res) => {
     }
 });
 
-// GET /leaderboard — Get aggregated leaderboard (group by name, sum points)
-app.get('/leaderboard', async (req, res) => {
+// GET /api/leaderboard — Get aggregated leaderboard (group by name, sum points)
+app.get('/api/leaderboard', async (req, res) => {
     try {
         const { data: submissions, error } = await supabase
             .from('submissions')
@@ -244,8 +249,8 @@ app.get('/leaderboard', async (req, res) => {
     }
 });
 
-// GET /submissions — Get all submissions
-app.get('/submissions', async (req, res) => {
+// GET /api/submissions — Get all submissions
+app.get('/api/submissions', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('submissions')
@@ -264,8 +269,8 @@ app.get('/submissions', async (req, res) => {
     }
 });
 
-// GET /settings — Get competition settings
-app.get('/settings', async (req, res) => {
+// GET /api/settings — Get competition settings
+app.get('/api/settings', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('competition_settings')
@@ -308,8 +313,8 @@ app.get('/settings', async (req, res) => {
     }
 });
 
-// POST /settings — Update competition settings
-app.post('/settings', async (req, res) => {
+// POST /api/settings — Update competition settings
+app.post('/api/settings', async (req, res) => {
     try {
         const { action } = req.body;
 
@@ -383,8 +388,8 @@ app.post('/settings', async (req, res) => {
     }
 });
 
-// DELETE /submissions/:id — Delete a submission
-app.delete('/submissions/:id', async (req, res) => {
+// DELETE /api/submissions/:id — Delete a submission
+app.delete('/api/submissions/:id', async (req, res) => {
     try {
         const id = parseInt(req.params.id, 10);
 
@@ -406,8 +411,8 @@ app.delete('/submissions/:id', async (req, res) => {
     }
 });
 
-// GET /export — Download aggregated CSV data
-app.get('/export', async (req, res) => {
+// GET /api/export — Download aggregated CSV data
+app.get('/api/export', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('submissions')
@@ -511,8 +516,8 @@ app.get('/export', async (req, res) => {
     }
 });
 
-// GET /export/excel — Download formatted Excel file
-app.get('/export/excel', async (req, res) => {
+// GET /api/export/excel — Download formatted Excel file
+app.get('/api/export/excel', async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('submissions')
@@ -635,8 +640,8 @@ app.get('/export/excel', async (req, res) => {
     }
 });
 
-// GET /players — Get all aggregated players
-app.get('/players', async (req, res) => {
+// GET /api/players — Get all aggregated players
+app.get('/api/players', async (req, res) => {
     try {
         const { data: submissions, error } = await supabase
             .from('submissions')
@@ -695,8 +700,8 @@ app.get('/players', async (req, res) => {
     }
 });
 
-// GET /sync/pull — Get all data from Supabase
-app.get('/sync/pull', async (req, res) => {
+// GET /api/sync/pull — Get all data from Supabase
+app.get('/api/sync/pull', async (req, res) => {
     try {
         const { data: submissions, error: submissionsError } = await supabase
             .from('submissions')
@@ -734,8 +739,8 @@ app.get('/sync/pull', async (req, res) => {
     }
 });
 
-// POST /sync/push — Verify sync
-app.post('/sync/push', async (req, res) => {
+// POST /api/sync/push — Verify sync
+app.post('/api/sync/push', async (req, res) => {
     try {
         const { data: submissions, error: submissionsError } = await supabase
             .from('submissions')
