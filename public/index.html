@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>تحدي التقديمات والانترفيوهات</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="page page-register">
+    <div class="page-shell">
+      <header class="main-header">
+        <div class="logo-title">
+          <span class="logo-badge">🏆</span>
+          <div>
+            <h1>تحدي الشغل</h1>
+            <p class="subtitle">سجّل كل تقديم وكل انترفيو واجمع نقاط على لوحة الشرف</p>
+          </div>
+        </div>
+        <nav class="main-nav">
+          <a href="competition.html" class="nav-link nav-link-competition locked" id="competitionLink">
+            لوحة المنافسة
+          </a>
+          <a href="admin.html" class="nav-link nav-link-admin">لوحة الإدارة</a>
+        </nav>
+      </header>
+
+      <main class="content-grid">
+        <section class="card card-main">
+          <h2>تسجيل محاولة جديدة</h2>
+          <p class="muted">
+            كل تقديم على وظيفة = <span class="highlight">+1 نقطة</span> — كل حضور انترفيو =
+            <span class="highlight">+5 نقاط</span>
+          </p>
+
+          <form id="submissionForm" class="form-grid" autocomplete="off">
+            <div class="form-group">
+              <label class="label">نوع التسجيل</label>
+              <div class="type-toggle-group" id="typeToggleGroup">
+                <button type="button" class="type-card" data-type="apply">
+                  <span class="type-emoji">📋</span>
+                  <span class="type-title">تقديم على وظيفة</span>
+                  <span class="type-points">+1 نقطة</span>
+                </button>
+                <button type="button" class="type-card" data-type="interview">
+                  <span class="type-emoji">🎯</span>
+                  <span class="type-title">حضرت انترفيو</span>
+                  <span class="type-points">+5 نقاط</span>
+                </button>
+              </div>
+              <p class="field-hint">ممكن تختار النوعين مع بعض في نفس التسجيل</p>
+            </div>
+
+            <div class="form-group">
+              <label for="name" class="label">اسمك الكامل</label>
+              <input id="name" name="name" type="text" required class="input" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="phone" class="label">رقم الموبايل</label>
+                <input id="phone" name="phone" type="tel" class="input" />
+              </div>
+              <div class="form-group">
+                <label for="email" class="label">الإيميل</label>
+                <input id="email" name="email" type="email" class="input" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="coach" class="label">اسم الكوتش</label>
+                <select id="coach" name="coach" class="input">
+                  <option value="">اختار الكوتش</option>
+                  <option value="دينا شرف">دينا شرف</option>
+                  <option value="سمر شرف">سمر شرف</option>
+                  <option value="محمد الجندي">محمد الجندي</option>
+                  <option value="محمد تركي">محمد تركي</option>
+                  <option value="أحلام">أحلام</option>
+                  <option value="مصطفى">مصطفى</option>
+                  <option value="ياسر ممدوح">ياسر ممدوح</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="job" class="label">اسم الشركة والوظيفة</label>
+                <input id="job" name="job" type="text" class="input" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="proofType" class="label">نوع الإثبات</label>
+                <select id="proofType" name="proof_type" class="input" required>
+                  <option value="">اختار نوع الإثبات</option>
+                  <option value="contract">📄 عقد عمل موقّع</option>
+                  <option value="official_email">📧 إيميل رسمي من الشركة</option>
+                  <option value="hr_letter">📋 خطاب HR مختوم أو موقّع</option>
+                  <option value="self_declaration">📝 نموذج إقرار ذاتي</option>
+                  <option value="other">❌ حاجة تانية</option>
+                </select>
+                <p id="proofError" class="error-text hidden">
+                  لا يمكن قبول إثبات من نوع "حاجة تانية" — اختار نوع من الأنواع المعتمدة.
+                </p>
+              </div>
+
+              <div class="form-group" id="uploadGroup">
+                <label for="screenshots" class="label">ارفع الإثبات (صور)</label>
+                <input
+                  id="screenshots"
+                  name="screenshots"
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  class="input input-file"
+                />
+                <p class="field-hint">تقدر ترفع أكثر من صورة (بحد أقصى ٥ ميجا للصورة)</p>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary btn-full">
+              تسجيل المحاولة
+            </button>
+          </form>
+        </section>
+
+        <section class="card card-side info-card">
+          <h3>إزاي تكسب في التحدي؟</h3>
+          <ul class="info-list">
+            <li>
+              <span class="bullet-icon">🔥</span>
+              <div>
+                <strong>سجّل كل محاولة</strong>
+                <p class="muted">كل مرة تقدّم على وظيفة أو تحضر انترفيو سجلها عشان متضيعش نقاط.</p>
+              </div>
+            </li>
+            <li>
+              <span class="bullet-icon">⚡</span>
+              <div>
+                <strong>النظام تنافسي</strong>
+                <p class="muted">الترتيب على لوحة الشرف بيتحدّث باستمرار حسب مجموع النقاط.</p>
+              </div>
+            </li>
+            <li>
+              <span class="bullet-icon">🎁</span>
+              <div>
+                <strong>جوائز للمراكز الأولى</strong>
+                <p class="muted">أعلى ٢ مشاركين بياخدوا تدريب مدفوع مميز.</p>
+              </div>
+            </li>
+          </ul>
+          <div class="mini-card">
+            <p class="muted">
+              بعد أول تسجيل ناجح هتتفعل عندك صفحة
+              <span class="highlight">لوحة المنافسة</span>
+              وتقدر تتابع ترتيبك لحظيًا.
+            </p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="js/form.js"></script>
+  </body>
+</html>
+

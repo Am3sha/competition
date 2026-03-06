@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <title>لوحة الـ Admin - تحدي التقديم</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="page page-admin">
+    <div class="page-shell">
+      <header class="main-header">
+        <div class="logo-title">
+          <span class="logo-badge">⚙️</span>
+          <div>
+            <h1>لوحة التحكم</h1>
+            <p class="subtitle">إدارة المسابقة والتقديمات والـ Leaderboard</p>
+          </div>
+        </div>
+        <nav class="main-nav">
+          <a href="index.html" class="nav-link">📋 تسجيل تقديم</a>
+          <a href="competition.html" class="nav-link">🏆 المسابقة</a>
+        </nav>
+      </header>
+
+      <main class="admin-layout">
+        <!-- Admin Main Panel -->
+        <section class="card admin-main" id="adminMain" style="display: none">
+          <div class="admin-badge">⚠️ Admin فقط</div>
+
+          <!-- Tab Navigation -->
+          <div class="admin-tabs" style="margin-top: 10px">
+            <button class="admin-tab-btn active" data-tab="dashboard">
+              📊 داشبورد البيانات
+            </button>
+            <button class="admin-tab-btn" data-tab="records">
+              📋 التسجيلات
+            </button>
+            <button class="admin-tab-btn" data-tab="settings">
+              ⚙️ الإعدادات
+            </button>
+          </div>
+
+          <!-- Tab 1: Dashboard -->
+          <div class="admin-tab-content active" id="tab-dashboard">
+            <!-- Stats Row -->
+            <div class="admin-stats-row" style="margin: 16px 0 0">
+              <div class="stat-box">
+                <div class="stat-label">إجمالي المشاركين</div>
+                <div id="dashTotalParticipants" class="stat-big-value">0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">إجمالي التسجيلات</div>
+                <div id="dashTotalSubmissions" class="stat-big-value">0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">إجمالي التقديمات</div>
+                <div id="dashTotalApplies" class="stat-big-value">0</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-label">إجمالي الانترفيوهات</div>
+                <div id="dashTotalInterviews" class="stat-big-value">0</div>
+              </div>
+            </div>
+
+            <!-- Search & Download -->
+            <div
+              style="
+                margin: 16px 0 0;
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                align-items: center;
+              "
+            >
+              <input
+                id="participantSearchInput"
+                type="text"
+                placeholder="ابحث عن مشارك (الاسم/الموبايل/الإيميل)"
+                class="input"
+                style="flex: 1; min-width: 200px"
+              />
+              <button id="downloadCsvBtn" class="btn-primary">
+                ⬇️ تحميل CSV
+              </button>
+              <button id="downloadExcelBtn" class="btn-primary">
+                ⬇️ تحميل Excel
+              </button>
+            </div>
+
+            <!-- Participants Table -->
+            <h3 style="margin: 16px 0 8px">جميع المشاركين</h3>
+            <div class="admin-table-wrapper">
+              <table class="admin-table" id="participantsTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>الاسم</th>
+                    <th>الموبايل</th>
+                    <th>الإيميل</th>
+                    <th>الكوتش</th>
+                    <th>الشركة</th>
+                    <th>التقديمات</th>
+                    <th>الانترفيوهات</th>
+                    <th>النقاط</th>
+                    <th>الإجراءات</th>
+                  </tr>
+                </thead>
+                <tbody id="participantsTableBody">
+                  <!-- يتم توليدها من admin.js -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Submissions Table -->
+            <h3 style="margin: 16px 0 8px">جميع التسجيلات</h3>
+            <div class="admin-table-wrapper">
+              <table class="admin-table" id="submissionsTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>الاسم</th>
+                    <th>النوع</th>
+                    <th>الشركة</th>
+                    <th>الكوتش</th>
+                    <th>الإثبات</th>
+                    <th>التاريخ</th>
+                    <th>النقاط</th>
+                  </tr>
+                </thead>
+                <tbody id="submissionsTableBody">
+                  <!-- يتم توليدها من admin.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tab 2: Records -->
+          <div class="admin-tab-content" id="tab-records">
+            <h3 style="margin: 16px 0 8px">📋 جميع التسجيلات بالتفاصيل</h3>
+            <div id="adminRecordsList" class="admin-submissions-list">
+              <!-- يتم توليد بطاقات التسجيلات من admin.js -->
+            </div>
+          </div>
+
+          <!-- Tab 3: Settings -->
+          <div class="admin-tab-content" id="tab-settings">
+            <!-- Competition status -->
+            <div class="admin-section" style="margin: 16px 0 0">
+              <h3>
+                حالة المسابقة
+                <span id="statusDot" class="status-dot"></span>
+              </h3>
+              <p id="adminCompetitionInfo" class="muted small"></p>
+              <div class="btn-row">
+                <button id="toggleCompetitionBtn" class="btn-primary">
+                  ⏯ تبديل الحالة
+                </button>
+                <button id="extendBtn" class="btn-secondary">
+                  ➕ مدّد 7 أيام
+                </button>
+              </div>
+            </div>
+
+            <!-- Player Management -->
+            <div class="admin-section">
+              <h3>إدارة المشاركين</h3>
+              <p class="muted small">حذف المشاركين وكل تسجيلاتهم</p>
+              <div id="settingsParticipantsList" class="admin-submissions-list">
+                <!-- يتم توليد قائمة المشاركين من admin.js -->
+              </div>
+            </div>
+
+            <!-- Cloud Sync -->
+            <div class="admin-section">
+              <h3>مزامنة البيانات</h3>
+              <p class="muted small">احفظ وحمّل البيانات من التخزين السحابي</p>
+              <div class="btn-row">
+                <button id="syncUploadBtn" class="btn-primary">
+                  ☁️ رفع للأونلاين
+                </button>
+                <button id="syncDownloadBtn" class="btn-secondary">
+                  ☁️ جلب من الأونلاين
+                </button>
+              </div>
+            </div>
+
+            <!-- Export -->
+            <div class="admin-section">
+              <h3>الروابط السريعة</h3>
+              <div class="btn-row">
+                <button id="openSheetsBtn" class="btn-dark">
+                  🟢 فتح Google Sheets
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Login overlay -->
+    <div id="adminLoginOverlay" class="admin-overlay">
+      <div class="admin-overlay-card">
+        <div class="admin-lock-icon">🔐</div>
+        <div class="admin-badge">⚙️ Admin فقط</div>
+        <h2 style="margin: 4px 0 4px">لوحة الـ Admin</h2>
+        <p class="muted small">
+          ادخل الـ Password عشان تدخل لوحة التحكم الكاملة للمسابقة.
+        </p>
+        <div class="form-group" style="margin-top: 10px">
+          <label for="adminPassword" class="label">Password</label>
+          <input
+            id="adminPassword"
+            type="password"
+            class="input"
+            autocomplete="off"
+            style="text-align: center"
+            placeholder="••••••••••"
+          />
+        </div>
+        <div class="admin-overlay-actions">
+          <button id="adminLoginBtn" class="btn-primary" style="flex: 1">
+            دخول
+          </button>
+          <button
+            id="adminCancelBtn"
+            class="btn-dark"
+            style="flex: 1"
+            onclick="window.location.href = 'index.html'"
+          >
+            إلغاء
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="js/admin.js"></script>
+  </body>
+</html>
