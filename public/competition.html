@@ -1,193 +1,187 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-  <head>
-    <meta charset="UTF-8" />
-    <title>🏆 تحدي التقديم الوظيفي</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body class="page page-competition">
-    <div class="page-shell">
-      <!-- Header / Nav -->
-      <header class="header-container">
-        <div class="logo-wrapper">
-          <img src="/icareeregy_logo.jpg" alt="iCareer Logo" class="company-logo">
-          <span class="company-name">iCareer</span>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>🏆 تحدي التقديم الوظيفي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="icon" type="image/png" href="/icareer-icon.png" />
+</head>
+
+<body class="page page-competition">
+  <div class="page-shell">
+    <!-- Header / Nav -->
+    <header class="header-container">
+      <div class="logo-wrapper">
+        <img src="/icareeregy_logo.jpg" alt="iCareer Logo" class="company-logo">
+        <span class="company-name">iCareer</span>
+      </div>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">الرئيسية</a>
+        <a href="competition.html" class="nav-link active">المسابقة</a>
+        <a href="admin.html" class="nav-link admin-link">الإدارة</a>
+      </nav>
+    </header>
+
+    <!-- Hero + Countdown + Stats -->
+    <main>
+      <section class="card glass-card hover-glow" style="margin-bottom: 16px">
+        <div class="competition-header">
+          <div>
+            <div class="mini-card" style="display: inline-flex; margin-top: 0">
+              <span class="type-emoji">🔥</span>
+              <div>
+                <strong>30 يوم تحدي</strong>
+                <p class="muted small">كل تقديم وكل انترفيو محسوب بنقطة</p>
+              </div>
+            </div>
+            <h2 style="margin: 10px 0 4px">تحدي التقديم الوظيفي</h2>
+            <p class="muted">
+              اجمع أكبر عدد بوينتس من التقديمات والانترفيوهات، وادخل سحب على
+              <span class="highlight">تدريب مدفوع في مجالك</span>.
+            </p>
+          </div>
+
+          <!-- Countdown -->
+          <div class="timer-block">
+            <h3 style="margin-bottom: 6px">الوقت المتبقي في التحدي</h3>
+            <div id="countdown" class="countdown">
+              <span class="time-part">
+                <span id="days" class="time-number">--</span>
+                <span class="time-label">يوم</span>
+              </span>
+              <span class="time-separator">:</span>
+              <span class="time-part">
+                <span id="hours" class="time-number">--</span>
+                <span class="time-label">ساعة</span>
+              </span>
+              <span class="time-separator">:</span>
+              <span class="time-part">
+                <span id="minutes" class="time-number">--</span>
+                <span class="time-label">دقيقة</span>
+              </span>
+              <span class="time-separator">:</span>
+              <span class="time-part">
+                <span id="seconds" class="time-number">--</span>
+                <span class="time-label">ثانية</span>
+              </span>
+            </div>
+            <p id="competitionStatus" class="muted small" style="margin-top: 6px"></p>
+          </div>
         </div>
-        <nav class="nav-links">
-          <a href="index.html" class="nav-link">الرئيسية</a>
-          <a href="competition.html" class="nav-link active">المسابقة</a>
-          <a href="admin.html" class="nav-link admin-link">الإدارة</a>
-        </nav>
-      </header>
 
-      <!-- Hero + Countdown + Stats -->
-      <main>
-        <section class="card glass-card hover-glow" style="margin-bottom: 16px">
-          <div class="competition-header">
+        <!-- Stats Row -->
+        <div class="stats-row" style="margin-top: 12px">
+          <div class="stat-card">
+            <span class="stat-label">مشارك</span>
+            <span id="statParticipants" class="stat-value">--</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">تقديم</span>
+            <span id="statApplications" class="stat-value">--</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">انترفيو</span>
+            <span id="statInterviews" class="stat-value">--</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Points System -->
+      <section class="card glass-card hover-glow" style="margin-bottom: 16px">
+        <div class="points-row">
+          <div class="mini-card" style="flex: 1">
+            <span class="type-emoji">📋</span>
             <div>
-              <div class="mini-card" style="display: inline-flex; margin-top: 0">
-                <span class="type-emoji">🔥</span>
-                <div>
-                  <strong>30 يوم تحدي</strong>
-                  <p class="muted small">كل تقديم وكل انترفيو محسوب بنقطة</p>
-                </div>
-              </div>
-              <h2 style="margin: 10px 0 4px">تحدي التقديم الوظيفي</h2>
-              <p class="muted">
-                اجمع أكبر عدد بوينتس من التقديمات والانترفيوهات، وادخل سحب على
-                <span class="highlight">تدريب مدفوع في مجالك</span>.
-              </p>
+              <strong>تقديم على وظيفة</strong>
+              <p class="muted small">كل تقديم بيحسبلك حتى لو مااتقبلتش</p>
             </div>
-
-            <!-- Countdown -->
-            <div class="timer-block">
-              <h3 style="margin-bottom: 6px">الوقت المتبقي في التحدي</h3>
-              <div id="countdown" class="countdown">
-                <span class="time-part">
-                  <span id="days" class="time-number">--</span>
-                  <span class="time-label">يوم</span>
-                </span>
-                <span class="time-separator">:</span>
-                <span class="time-part">
-                  <span id="hours" class="time-number">--</span>
-                  <span class="time-label">ساعة</span>
-                </span>
-                <span class="time-separator">:</span>
-                <span class="time-part">
-                  <span id="minutes" class="time-number">--</span>
-                  <span class="time-label">دقيقة</span>
-                </span>
-                <span class="time-separator">:</span>
-                <span class="time-part">
-                  <span id="seconds" class="time-number">--</span>
-                  <span class="time-label">ثانية</span>
-                </span>
-              </div>
-              <p id="competitionStatus" class="muted small" style="margin-top: 6px"></p>
-            </div>
+            <div style="margin-right: auto; font-weight: 800; color: var(--gold)">+1</div>
           </div>
-
-          <!-- Stats Row -->
-          <div class="stats-row" style="margin-top: 12px">
-            <div class="stat-card">
-              <span class="stat-label">مشارك</span>
-              <span id="statParticipants" class="stat-value">--</span>
+          <div class="mini-card" style="flex: 1">
+            <span class="type-emoji">🎯</span>
+            <div>
+              <strong>حضور انترفيو</strong>
+              <p class="muted small">سواء اتقبلت أو لا، المهم تحضر</p>
             </div>
-            <div class="stat-card">
-              <span class="stat-label">تقديم</span>
-              <span id="statApplications" class="stat-value">--</span>
-            </div>
-            <div class="stat-card">
-              <span class="stat-label">انترفيو</span>
-              <span id="statInterviews" class="stat-value">--</span>
-            </div>
+            <div style="margin-right: auto; font-weight: 800; color: var(--gold)">+5</div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- Points System -->
-        <section class="card glass-card hover-glow" style="margin-bottom: 16px">
-          <div class="points-row">
-            <div class="mini-card" style="flex: 1">
-              <span class="type-emoji">📋</span>
-              <div>
-                <strong>تقديم على وظيفة</strong>
-                <p class="muted small">كل تقديم بيحسبلك حتى لو مااتقبلتش</p>
-              </div>
-              <div style="margin-right: auto; font-weight: 800; color: var(--gold)">+1</div>
-            </div>
-            <div class="mini-card" style="flex: 1">
-              <span class="type-emoji">🎯</span>
-              <div>
-                <strong>حضور انترفيو</strong>
-                <p class="muted small">سواء اتقبلت أو لا، المهم تحضر</p>
-              </div>
-              <div style="margin-right: auto; font-weight: 800; color: var(--gold)">+5</div>
-            </div>
-          </div>
-        </section>
+      <!-- Leaderboard -->
+      <section class="card glass-card hover-glow" style="margin-bottom: 16px">
+        <div class="leaderboard-header" style="display: flex; align-items: center; gap: 8px">
+          <h3 style="margin: 0">🏆 Leaderboard</h3>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.08)"></div>
+        </div>
+        <p class="muted small" style="margin-bottom: 10px">
+          يتم تحديث الترتيب تلقائيًا كل ٣٠ ثانية. في حالة تساوي النقاط، اللي عنده انترفيوهات أكتر
+          يتقدّم. في حالة تطابق تام بيظهر
+          <span class="highlight">تعادل ⚡</span>.
+        </p>
+        <div id="leaderboardList">
+          <!-- TOP 5 يتم توليدهم من competition.js -->
+        </div>
+      </section>
 
-        <!-- Leaderboard -->
-        <section class="card glass-card hover-glow" style="margin-bottom: 16px">
-          <div class="leaderboard-header" style="display: flex; align-items: center; gap: 8px">
-            <h3 style="margin: 0">🏆 Leaderboard</h3>
-            <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.08)"></div>
-          </div>
-          <p class="muted small" style="margin-bottom: 10px">
-            يتم تحديث الترتيب تلقائيًا كل ٣٠ ثانية. في حالة تساوي النقاط، اللي عنده انترفيوهات أكتر
-            يتقدّم. في حالة تطابق تام بيظهر
-            <span class="highlight">تعادل ⚡</span>.
-          </p>
-          <div id="leaderboardList">
-            <!-- TOP 5 يتم توليدهم من competition.js -->
-          </div>
-        </section>
-
-        <!-- Prize Section -->
-        <section class="card card-side prize-card glass-card hover-glow">
-          <div
-            style="
+      <!-- Prize Section -->
+      <section class="card card-side prize-card glass-card hover-glow">
+        <div style="
               position: absolute;
               inset: 0;
               background: radial-gradient(circle at top, rgba(245, 197, 24, 0.12), transparent 55%);
               opacity: 0.25;
               pointer-events: none;
-            "
-          ></div>
-          <div style="position: relative; z-index: 1">
-            <h3>🏆 الجائزة الكبرى</h3>
-            <p class="muted">
-              أعلى اتنين في البوينتس في نهاية الشهر هيتم اختيارهم للحصول على
-              <span class="highlight">تدريب مدفوع في مجالهم</span>.
-            </p>
-            <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap">
-              <div class="mini-card" style="flex: 1; min-width: 140px">
-                <span class="type-emoji">🥇</span>
-                <div>
-                  <strong>المركز الأول</strong>
-                  <p class="muted small">تدريب مدفوع كامل</p>
-                </div>
+            "></div>
+        <div style="position: relative; z-index: 1">
+          <h3>🏆 الجائزة الكبرى</h3>
+          <p class="muted">
+            أعلى اتنين في البوينتس في نهاية الشهر هيتم اختيارهم للحصول على
+            <span class="highlight">تدريب مدفوع في مجالهم</span>.
+          </p>
+          <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap">
+            <div class="mini-card" style="flex: 1; min-width: 140px">
+              <span class="type-emoji">🥇</span>
+              <div>
+                <strong>المركز الأول</strong>
+                <p class="muted small">تدريب مدفوع كامل</p>
               </div>
-              <div class="mini-card" style="flex: 1; min-width: 140px">
-                <span class="type-emoji">🥈</span>
-                <div>
-                  <strong>المركز الثاني</strong>
-                  <p class="muted small">تدريب مدفوع كامل</p>
-                </div>
+            </div>
+            <div class="mini-card" style="flex: 1; min-width: 140px">
+              <span class="type-emoji">🥈</span>
+              <div>
+                <strong>المركز الثاني</strong>
+                <p class="muted small">تدريب مدفوع كامل</p>
               </div>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Lock overlay -->
+  <div id="competitionLockOverlay" class="comp-lock-overlay hidden">
+    <div class="comp-lock-card">
+      <div class="comp-lock-icon">🔒</div>
+      <h2 style="margin: 6px 0 4px">لازم تسجّل تقديم الأول!</h2>
+      <p class="muted small">
+        علشان تفتح صفحة المسابقة وتشوف ترتيبك، سجّل أول تقديم أو انترفيو من صفحة التسجيل.
+      </p>
+      <button class="btn-primary btn-full" style="margin-top: 10px" onclick="window.location.href='index.html'">
+        سجّل دلوقتي
+      </button>
     </div>
+  </div>
 
-    <!-- Lock overlay -->
-    <div id="competitionLockOverlay" class="comp-lock-overlay hidden">
-      <div class="comp-lock-card">
-        <div class="comp-lock-icon">🔒</div>
-        <h2 style="margin: 6px 0 4px">لازم تسجّل تقديم الأول!</h2>
-        <p class="muted small">
-          علشان تفتح صفحة المسابقة وتشوف ترتيبك، سجّل أول تقديم أو انترفيو من صفحة التسجيل.
-        </p>
-        <button
-          class="btn-primary btn-full"
-          style="margin-top: 10px"
-          onclick="window.location.href='index.html'"
-        >
-          سجّل دلوقتي
-        </button>
-      </div>
-    </div>
+  <div id="toastContainer" class="toast-container"></div>
 
-    <div id="toastContainer" class="toast-container"></div>
+  <script src="js/competition.js"></script>
+</body>
 
-    <script src="js/competition.js"></script>
-  </body>
 </html>
-

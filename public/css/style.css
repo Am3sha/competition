@@ -1523,3 +1523,210 @@ body::before {
   display: flex;
   gap: 15px;
 }
+
+/* Logout Button */
+.logout-btn {
+  background: rgba(220, 38, 38, 0.15);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  color: #ef4444;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(220, 38, 38, 0.25);
+  border-color: #ef4444;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(220, 38, 38, 0.3);
+}
+
+.logout-btn span {
+  font-size: 1.1rem;
+}
+
+/* Error States for Form Inputs */
+input.error, input:invalid:not(:placeholder-shown) {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 5px;
+  padding-right: 10px;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Advanced Timer Controls */
+.duration-control {
+  margin-bottom: 25px;
+}
+
+.duration-control label {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(255,255,255,0.8);
+  font-weight: 600;
+}
+
+.duration-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.duration-btn {
+  padding: 10px 20px;
+  background: var(--card2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: white;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1 1 auto;
+  min-width: 80px;
+}
+
+.duration-btn:hover {
+  background: rgba(245, 197, 24, 0.15);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.duration-btn.active {
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  color: black;
+  border-color: transparent;
+  box-shadow: 0 5px 15px rgba(245, 197, 24, 0.3);
+}
+
+/* Custom Date Control */
+.custom-date-control {
+  margin-bottom: 25px;
+  padding: 15px;
+  background: rgba(0,0,0,0.2);
+  border-radius: 16px;
+}
+
+.custom-date-control label {
+  display: block;
+  margin-bottom: 10px;
+  color: rgba(255,255,255,0.8);
+}
+
+.date-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.date-input {
+  flex: 1;
+  padding: 12px;
+  background: var(--card2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  color: white;
+  font-family: 'Cairo', sans-serif;
+  direction: ltr; /* Dates */
+}
+
+.date-input:focus {
+  border-color: var(--gold);
+  outline: none;
+}
+
+/* Detailed Time Tracker */
+.time-details {
+  margin-top: 25px;
+  padding: 15px;
+  background: linear-gradient(135deg, rgba(245,197,24,0.1), rgba(255,107,53,0.1));
+  border-radius: 16px;
+  border: 1px solid rgba(245,197,24,0.2);
+}
+
+.time-details h4 {
+  margin-bottom: 15px;
+  color: var(--gold);
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.time-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.time-label {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.5);
+}
+
+.time-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: white;
+}
+
+.time-value.highlight {
+  color: var(--gold);
+  font-size: 1.2rem;
+}
+
+/* Dedicated Action Buttons */
+.action-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  border: none;
+  border-radius: 12px;
+  color: black;
+  font-weight: 700;
+  font-family: 'Cairo', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(245, 197, 24, 0.4);
+}
+
+.action-btn.secondary {
+  background: var(--card2);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.action-btn.secondary:hover {
+  background: var(--card);
+  border-color: var(--gold);
+}

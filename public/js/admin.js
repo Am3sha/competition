@@ -1,10 +1,25 @@
-// AUDIT: Security Note
-// Admin password is hardcoded in client ('Admin@2025') for simplicity.
-// For production deployment, consider:
-// 1. Moving password to backend with session authentication
-// 2. Using proper API key header authentication
-// 3. Implementing JWT tokens for admin access
-// Currently acceptable for closed/internal use only.
+// ====== Authentication ======
+function updateLogoutButton() {
+  const logoutBtn = document.getElementById('logoutBtn');
+  const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+  
+  if (logoutBtn) {
+    logoutBtn.style.display = isLoggedIn ? 'flex' : 'none';
+  }
+}
+
+function logout() {
+  if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+    localStorage.removeItem('adminLoggedIn');
+    localStorage.removeItem('comp_registered');
+    
+    document.getElementById('adminMain').style.display = 'none';
+    document.getElementById('adminLoginOverlay').style.display = 'flex';
+    
+    updateLogoutButton();
+    showToast('✅ تم تسجيل الخروج بنجاح', 'success');
+  }
+}
 
 function showToast(message, type = 'success') {
   const container = document.getElementById('toastContainer');
@@ -526,11 +541,124 @@ async function loadSettings() {
     const data = await res.json();
     currentSettings = data.settings || null;
     renderSettingsInfo(currentSettings);
+    updateTimeDisplay(currentSettings);
   } catch (err) {
     console.error(err);
     showToast('حصل خطأ في تحميل إعدادات المسابقة.', 'error');
   }
 }
+
+// ==== Advanced Time Controls ====
+function updateTimeDisplay(settings) {
+  if (!settings) return;
+  
+  const startDateDisp = document.getElementById('startDateDisplay');
+  const endDateDisp = document.getElementById('endDateDisplay');
+  const daysDisp = document.getElementById('daysRemaining');
+  const statusDisp = document.getElementById('statusDisplay');
+  
+  if (!startDateDisp) return; // not on settings tab yet/element missing
+  
+  const startDate = new Date(settings.start_date);
+  const endDate = new Date(settings.end_date);
+  const now = new Date();
+  
+  const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+  
+  startDateDisp.textContent = startDate.toLocaleDateString('ar-EG');
+  endDateDisp.textContent = endDate.toLocaleDateString('ar-EG');
+  daysDisp.textContent = daysRemaining > 0 ? daysRemaining : 'انتهت';
+  statusDisp.textContent = settings.status === 'running' ? 'شغالة ✅' : 'موقوفة ⛔';
+}
+
+async function setDuration(days) {
+  try {
+    const response = await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        action: 'set_duration',
+        days: days 
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      showToast(`✅ تم تعيين مدة المسابقة لـ ${days} يوم`, 'success');
+      loadSettings();
+      
+      document.querySelectorAll('.duration-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.days == days) {
+          btn.classList.add('active');
+        }
+      });
+    } else {
+      showToast('⚠️ فشل تعيين المدة', 'error');
+    }
+  } catch (error) {
+    showToast('⚠️ خطأ في الاتصال', 'error');
+  }
+}
+
+async function setCustomEndDate() {
+  const dateInput = document.getElementById('customEndDate');
+  if (!dateInput.value) {
+    showToast('❌ اختر تاريخ أولاً', 'error');
+    return;
+  }
+  
+  try {
+    const response = await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        action: 'set_end_date',
+        end_date: dateInput.value 
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      showToast('✅ تم تعيين تاريخ الانتهاء', 'success');
+      loadSettings();
+    } else {
+      showToast('⚠️ فشل تعيين التاريخ', 'error');
+    }
+  } catch (error) {
+    showToast('⚠️ خطأ في الاتصال', 'error');
+  }
+}
+
+async function resetToDefault() {
+  try {
+    const response = await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        action: 'reset_to_default' 
+      })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      showToast('✅ تم إعادة التعيين لـ 30 يوم', 'success');
+      loadSettings();
+      
+      document.querySelectorAll('.duration-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.days == 30) {
+          btn.classList.add('active');
+        }
+      });
+    } else {
+      showToast('⚠️ فشل إعادة التعيين', 'error');
+    }
+  } catch (error) {
+    showToast('⚠️ خطأ في الاتصال', 'error');
+  }
+}
+
 
 async function loadSubmissions() {
   try {
@@ -712,17 +840,52 @@ document.addEventListener('DOMContentLoaded', () => {
   toggleBtn.addEventListener('click', toggleCompetition);
   extendBtn.addEventListener('click', extendCompetition);
 
-  function doLogin() {
+  // Advanced Time controls
+  document.querySelectorAll('.duration-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      setDuration(parseInt(btn.dataset.days));
+    });
+  });
+  
+  const customDateBtn = document.getElementById('setCustomDateBtn');
+  if (customDateBtn) {
+    customDateBtn.addEventListener('click', setCustomEndDate);
+  }
+  
+  const resetBtn = document.getElementById('resetToDefaultBtn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', resetToDefault);
+  }
+
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+  }
+
+  async function doLogin() {
     const val = passwordInput.value.trim();
-    if (val === 'Admin@2025') {
-      localStorage.setItem('adminLoggedIn', 'true');
-      localStorage.setItem('comp_registered', 'true');
-      loginOverlay.style.display = 'none';
-      adminMain.style.display = 'block';
-      loadAdminData();
-      showToast('تم تسجيل الدخول كإدمن.', 'success');
-    } else {
-      showToast('❌ كلمة السر غلط!', 'error');
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: val })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        localStorage.setItem('adminLoggedIn', 'true');
+        localStorage.setItem('comp_registered', 'true');
+        loginOverlay.style.display = 'none';
+        adminMain.style.display = 'block';
+        updateLogoutButton();
+        loadAdminData();
+        showToast('✅ مرحباً بك في لوحة الإدارة', 'success');
+      } else {
+        showToast('❌ كلمة السر غلط!', 'error');
+      }
+    } catch (error) {
+      showToast('❌ خطأ في الاتصال بالسيرفر', 'error');
     }
   }
 
@@ -734,11 +897,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  if (localStorage.getItem('adminLoggedIn') === 'true') {
+  const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+  if (!isLoggedIn) {
+    loginOverlay.style.display = 'flex';
+    adminMain.style.display = 'none';
+  } else {
     loginOverlay.style.display = 'none';
     adminMain.style.display = 'block';
     loadAdminData();
   }
+  
+  updateLogoutButton();
 });
 
 

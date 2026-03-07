@@ -57,6 +57,22 @@ function calculatePoints(registrationTypes) {
     return { type: 'none', points: 0 };
 }
 
+// POST /api/admin/login — Verify admin password
+app.post('/api/admin/login', async (req, res) => {
+    try {
+        const { password } = req.body;
+        const adminPassword = process.env.ADMIN_PASSWORD || 'Admin@2025';
+
+        if (password === adminPassword) {
+            return res.json({ success: true });
+        } else {
+            return res.status(401).json({ success: false, error: 'Invalid password' });
+        }
+    } catch (error) {
+        return res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 // POST /api/submit — Save new submission + upload screenshots to Supabase Storage
 app.post('/api/submit', upload.array('screenshots'), async (req, res) => {
     try {
@@ -316,7 +332,7 @@ app.get('/api/settings', async (req, res) => {
 // POST /api/settings — Update competition settings
 app.post('/api/settings', async (req, res) => {
     try {
-        const { action } = req.body;
+        const { action, days, end_date } = req.body;
 
         if (!action) {
             return res.status(400).json({ success: false, error: 'invalid_action' });
@@ -338,26 +354,46 @@ app.post('/api/settings', async (req, res) => {
         let updates = {};
         const now = new Date();
 
-        if (action === 'start') {
-            const end = new Date();
-            end.setDate(end.getDate() + 30);
-            updates = {
-                status: 'running',
-                start_date: now.toISOString(),
-                end_date: end.toISOString(),
-            };
-        } else if (action === 'stop') {
-            updates = {
-                status: 'stopped',
-            };
-        } else if (action === 'extend') {
-            const base = current?.end_date ? new Date(current.end_date) : new Date();
-            base.setDate(base.getDate() + 7);
-            updates = {
-                end_date: base.toISOString(),
-            };
-        } else {
-            return res.status(400).json({ success: false, error: 'invalid_action' });
+        switch (action) {
+            case 'set_duration':
+                updates = {
+                    end_date: new Date(now.getTime() + days * 24 * 60 * 60 * 1000).toISOString()
+                };
+                break;
+
+            case 'set_end_date':
+                updates = {
+                    end_date: new Date(end_date).toISOString()
+                };
+                break;
+
+            case 'reset_to_default':
+                updates = {
+                    start_date: now.toISOString(),
+                    end_date: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                };
+                break;
+
+            case 'start':
+                updates = {
+                    status: 'running',
+                    start_date: now.toISOString(),
+                    end_date: current?.end_date || new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString()
+                };
+                break;
+
+            case 'stop':
+                updates = { status: 'stopped' };
+                break;
+
+            case 'extend':
+                const currentEnd = current?.end_date ? new Date(current.end_date) : now;
+                currentEnd.setDate(currentEnd.getDate() + 7);
+                updates = { end_date: currentEnd.toISOString() };
+                break;
+
+            default:
+                return res.status(400).json({ success: false, error: 'invalid_action' });
         }
 
         let result;

@@ -54,6 +54,31 @@ function updateCompetitionLinkLock() {
   }
 }
 
+// ====== Input Validation & Formatting ======
+function validatePhone(phone) {
+  const cleanPhone = phone.replace(/[\s\-]/g, '');
+  const phoneRegex = /^01[0-2|5]{1}[0-9]{8}$/;
+  return phoneRegex.test(cleanPhone);
+}
+
+function validateEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+function formatPhone(input) {
+  let value = input.value.replace(/\D/g, '');
+  if (value.length > 0) {
+    if (value.length <= 4) {
+      input.value = value;
+    } else if (value.length <= 7) {
+      input.value = value.slice(0, 4) + '-' + value.slice(4);
+    } else {
+      input.value = value.slice(0, 4) + '-' + value.slice(4, 7) + '-' + value.slice(7, 11);
+    }
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   updateCompetitionLinkLock();
 
@@ -66,6 +91,49 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadGroup = document.getElementById('uploadGroup');
 
   const selectedTypes = new Set();
+
+  const phoneInput = document.getElementById('phone');
+  if (phoneInput) {
+    phoneInput.addEventListener('input', function() {
+      formatPhone(this);
+      const phone = this.value.replace(/\D/g, '');
+      const phoneError = document.getElementById('phoneError');
+      if (phone.length > 0 && !validatePhone(phone)) {
+        if (!phoneError) {
+          const error = document.createElement('div');
+          error.id = 'phoneError';
+          error.className = 'error-message';
+          error.textContent = '❌ رقم الموبايل غير صحيح (مثال: 010-1234-5678)';
+          this.parentNode.appendChild(error);
+        }
+        this.style.borderColor = '#ef4444';
+      } else {
+        if (phoneError) phoneError.remove();
+        this.style.borderColor = 'rgba(255,255,255,0.1)';
+      }
+    });
+  }
+
+  const emailInput = document.getElementById('email');
+  if (emailInput) {
+    emailInput.addEventListener('input', function() {
+      const email = this.value;
+      const emailError = document.getElementById('emailError');
+      if (email.length > 0 && !validateEmail(email)) {
+        if (!emailError) {
+          const error = document.createElement('div');
+          error.id = 'emailError';
+          error.className = 'error-message';
+          error.textContent = '❌ البريد الإلكتروني غير صحيح';
+          this.parentNode.appendChild(error);
+        }
+        this.style.borderColor = '#ef4444';
+      } else {
+        if (emailError) emailError.remove();
+        this.style.borderColor = 'rgba(255,255,255,0.1)';
+      }
+    });
+  }
 
   typeButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -101,6 +169,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (proofTypeSelect.value === 'other') {
       showToast('نوع الإثبات المختار غير مقبول، عدّل الاختيار.', 'error');
+      return;
+    }
+
+    const phone = document.getElementById('phone').value.replace(/\D/g, '');
+    if (phone.length > 0 && !validatePhone(phone)) {
+      showToast('❌ رقم الموبايل غير صحيح', 'error');
+      return;
+    }
+
+    const email = document.getElementById('email').value.trim();
+    if (email.length > 0 && !validateEmail(email)) {
+      showToast('❌ البريد الإلكتروني غير صحيح', 'error');
       return;
     }
 
