@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 
 <head>
@@ -16,7 +16,7 @@
   <div class="page-shell">
     <header class="header-container">
       <div class="logo-wrapper">
-        <img src="/icareeregy_logo.jpg" alt="iCareer Logo" class="company-logo">
+        <img src="/icareeregy_logo.jpg" alt="iCareer Logo" class="company-logo" />
         <span class="company-name">iCareer</span>
       </div>
       <nav class="nav-links">
@@ -31,14 +31,17 @@
         <span class="gradient-text">iCareer</span>
         <span class="white-text">تحدي التقديمات</span>
       </h1>
-      <p class="hero-subtitle">انضم إلى آلاف الشباب في رحلة تطوير مسارك المهني</p>
+      <p class="hero-subtitle">
+        انضم إلى آلاف الشباب في رحلة تطوير مسارك المهني
+      </p>
     </div>
 
     <main class="content-grid registration-card animate-fade">
       <section class="card card-main glass-card hover-glow">
         <h2>تسجيل محاولة جديدة</h2>
         <p class="muted">
-          كل تقديم على وظيفة = <span class="highlight">+1 نقطة</span> — كل حضور انترفيو =
+          كل تقديم على وظيفة = <span class="highlight">+1 نقطة</span> — كل
+          حضور انترفيو =
           <span class="highlight">+5 نقاط</span>
         </p>
 
@@ -61,24 +64,24 @@
           </div>
 
           <div class="form-group">
-            <label for="name" class="label">اسمك الكامل</label>
+            <label for="name" class="label required-field">اسمك الكامل</label>
             <input id="name" name="name" type="text" required class="input" />
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="phone" class="label">رقم الموبايل</label>
+              <label for="phone" class="label required-field">رقم الموبايل</label>
               <input id="phone" name="phone" type="tel" class="input" />
             </div>
             <div class="form-group">
-              <label for="email" class="label">الإيميل</label>
+              <label for="email" class="label required-field">الإيميل</label>
               <input id="email" name="email" type="email" class="input" />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="coach" class="label">اسم الكوتش</label>
+              <label for="coach" class="label required-field">اسم الكوتش</label>
               <select id="coach" name="coach" class="input">
                 <option value="">اختار الكوتش</option>
                 <option value="دينا شرف">دينا شرف</option>
@@ -92,32 +95,57 @@
             </div>
 
             <div class="form-group">
-              <label for="job" class="label">اسم الشركة والوظيفة</label>
+              <label for="job" class="label required-field">اسم الشركة والوظيفة</label>
               <input id="job" name="job" type="text" class="input" />
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="proofType" class="label">نوع الإثبات</label>
+              <label for="proofType" class="label required-field">نوع الإثبات</label>
               <select id="proofType" name="proof_type" class="input" required>
                 <option value="">اختار نوع الإثبات</option>
                 <option value="contract">📄 عقد عمل موقّع</option>
-                <option value="official_email">📧 إيميل رسمي من الشركة</option>
+                <option value="official_email">
+                  📧 إيميل رسمي من الشركة
+                </option>
                 <option value="hr_letter">📋 خطاب HR مختوم أو موقّع</option>
                 <option value="self_declaration">📝 نموذج إقرار ذاتي</option>
                 <option value="other">❌ حاجة تانية</option>
               </select>
               <p id="proofError" class="error-text hidden">
-                لا يمكن قبول إثبات من نوع "حاجة تانية" — اختار نوع من الأنواع المعتمدة.
+                لا يمكن قبول إثبات من نوع "حاجة تانية" — اختار نوع من الأنواع
+                المعتمدة.
               </p>
             </div>
 
-            <div class="form-group" id="uploadGroup">
-              <label for="screenshots" class="label">ارفع الإثبات (صور)</label>
-              <input id="screenshots" name="screenshots" type="file" accept="image/*" multiple
-                class="input input-file" />
-              <p class="field-hint">تقدر ترفع أكثر من صورة (بحد أقصى ٥ ميجا للصورة)</p>
+            <div class="form-group upload-section" id="uploadGroup">
+              <label class="label required-field">ارفع الإثبات (صور)</label>
+
+              <!-- منطقة السحب والإفلات -->
+              <div class="dropzone-area" id="dropzone" ondragover="handleDragOver(event)"
+                ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                <div class="dropzone-content">
+                  <div class="upload-icon">📎</div>
+                  <div class="upload-primary">اسحب وأفلت الملفات هنا</div>
+                  <div class="upload-secondary">أو</div>
+                  <button type="button" class="btn-secondary upload-button"
+                    onclick="document.getElementById('fileInput').click()">
+                    اختر من جهازك
+                  </button>
+                </div>
+                <input type="file" id="fileInput" name="screenshots" class="file-input" multiple
+                  accept="image/jpeg,image/png,image/jpg,application/pdf" onchange="handleFileSelect(event)" />
+              </div>
+
+              <!-- رسائل الخطأ والتحذير -->
+              <div id="uploadError" class="upload-error hidden"></div>
+              <div id="fileLimitWarning" class="file-warning hidden"></div>
+
+              <!-- قائمة الصور المرفوعة -->
+              <div id="fileList" class="file-list"></div>
+
+              <div class="field-hint">يمكنك رفع حتى 3 صور (بحد أقصى ٥ ميجا للصورة)</div>
             </div>
           </div>
 
@@ -134,14 +162,18 @@
             <span class="bullet-icon">🔥</span>
             <div>
               <strong>سجّل كل محاولة</strong>
-              <p class="muted">كل مرة تقدّم على وظيفة أو تحضر انترفيو سجلها عشان متضيعش نقاط.</p>
+              <p class="muted">
+                كل مرة تقدّم على وظيفة أو تحضر انترفيو سجلها عشان متضيعش نقاط.
+              </p>
             </div>
           </li>
           <li>
             <span class="bullet-icon">⚡</span>
             <div>
               <strong>النظام تنافسي</strong>
-              <p class="muted">الترتيب على لوحة الشرف بيتحدّث باستمرار حسب مجموع النقاط.</p>
+              <p class="muted">
+                الترتيب على لوحة الشرف بيتحدّث باستمرار حسب مجموع النقاط.
+              </p>
             </div>
           </li>
           <li>
@@ -166,7 +198,6 @@
   <div id="toastContainer" class="toast-container"></div>
 
   <script src="js/form.js"></script>
-
 </body>
 
 </html>

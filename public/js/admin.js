@@ -2,23 +2,90 @@
 function updateLogoutButton() {
   const logoutBtn = document.getElementById('logoutBtn');
   const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-  
+
   if (logoutBtn) {
     logoutBtn.style.display = isLoggedIn ? 'flex' : 'none';
   }
 }
 
 function logout() {
-  if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+  // إنشاء عنصر الرسالة المخصص
+  const modal = document.createElement('div');
+  modal.className = 'confirm-modal';
+  modal.innerHTML = `
+    <div class="confirm-content">
+      <div class="confirm-icon">🚪</div>
+      <h3 class="confirm-title">تسجيل الخروج</h3>
+      <p class="confirm-message">هل أنت متأكد من تسجيل الخروج من لوحة الإدارة؟</p>
+      <div class="confirm-actions">
+        <button class="confirm-btn cancel-btn" onclick="closeModal()">إلغاء</button>
+        <button class="confirm-btn logout-confirm-btn" onclick="confirmLogout()">تسجيل خروج</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // تعريف دالة closeModal محلياً
+  window.closeModal = function () {
+    modal.remove();
+  };
+
+  // تعريف دالة confirmLogout محلياً
+  window.confirmLogout = function () {
+    // مسح بيانات الجلسة
     localStorage.removeItem('adminLoggedIn');
     localStorage.removeItem('comp_registered');
-    
+
+    // إخفاء محتوى الإدارة وإظهار شاشة الدخول
     document.getElementById('adminMain').style.display = 'none';
     document.getElementById('adminLoginOverlay').style.display = 'flex';
-    
+
+    // إخفاء زر logout
     updateLogoutButton();
+
+    // إغلاق المودال
+    modal.remove();
+
+    // إظهار رسالة نجاح
     showToast('✅ تم تسجيل الخروج بنجاح', 'success');
-  }
+  };
+}
+
+// دالة موحدة لتأكيد الحذف
+function confirmDelete(options) {
+  const {
+    title = 'تأكيد الحذف',
+    message = 'هل أنت متأكد من حذف هذا العنصر؟',
+    itemName = '',
+    onConfirm
+  } = options;
+
+  const modal = document.createElement('div');
+  modal.className = 'confirm-modal';
+  modal.innerHTML = `
+    <div class="confirm-content">
+      <div class="confirm-icon delete-icon">🗑️</div>
+      <h3 class="confirm-title">${title}</h3>
+      <p class="confirm-message">${message}</p>
+      ${itemName ? `<div class="confirm-item">"${itemName}"</div>` : ''}
+      <div class="confirm-actions">
+        <button class="confirm-btn cancel-btn" onclick="closeModal()">إلغاء</button>
+        <button class="confirm-btn delete-confirm-btn" onclick="executeDelete()">حذف</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  window.closeModal = function () {
+    modal.remove();
+  };
+
+  window.executeDelete = async function () {
+    modal.remove();
+    if (onConfirm) await onConfirm();
+  };
 }
 
 function showToast(message, type = 'success') {
@@ -408,43 +475,77 @@ function renderRecords(list) {
 
     const screenshotsWrap = document.createElement('div');
     screenshotsWrap.className = 'record-screenshots';
-    (s.screenshot_urls || []).forEach((url) => {
-      const img = document.createElement('img');
-      img.className = 'record-screenshot';
-      img.src = url;
-      img.alt = 'إثبات';
-      img.addEventListener('click', () => {
-        window.open(url, '_blank');
-      });
-      screenshotsWrap.appendChild(img);
-    });
+    // Handle screenshot_urls: could be array or JSON string
+    let screenshotUrls = s.screenshot_urls || [];
+    if (typeof screenshotUrls === 'string') {
+      try {
+        screenshotUrls = JSON.parse(screenshotUrls);
+      } catch (e) {
+        console.warn('Failed to parse screenshot_urls:', e);
+        screenshotUrls = [];
+      }
+    }
+    if (!Array.isArray(screenshotUrls)) {
+      screenshotUrls = [];
+    }
+
+    if (screenshotUrls.length > 0) {
+      // بناء معرض الصور
+      const galleryHtml = `
+        <div class="submission-gallery">
+          <div class="gallery-header">
+            <span class="gallery-count">📸 ${screenshotUrls.length} ${screenshotUrls.length === 1 ? 'صورة' : 'صور'}</span>
+          </div>
+          <div class="gallery-thumbnails">
+            ${screenshotUrls.map((url, index) => `
+              <div class="gallery-item" onclick="window.open('${url}', '_blank')">
+                <img src="${url}" alt="صورة ${index + 1}" loading="lazy" class="gallery-thumb">
+                <span class="gallery-index">${index + 1}</span>
+                <div class="gallery-overlay">
+                  <span>عرض</span>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      screenshotsWrap.innerHTML = galleryHtml;
+    } else {
+      screenshotsWrap.innerHTML = '<p class="no-images">📷 لا توجد صور مرفوعة</p>';
+    }
 
     const footer = document.createElement('div');
     footer.className = 'record-footer';
     const del = document.createElement('button');
     del.className = 'btn-danger';
     del.textContent = '🗑 حذف التسجيل';
-    del.addEventListener('click', async () => {
-      if (!confirm('متأكد إنك عايز تحذف هذا التسجيل؟')) return;
-      try {
-        const res = await fetch(`/api/submissions/${s.id}`, { method: 'DELETE' });
-        const data = await res.json();
-        if (!res.ok || !data.success) {
-          showToast('فشل حذف التسجيل.', 'error');
-          return;
+    del.addEventListener('click', () => {
+      confirmDelete({
+        title: 'حذف تسجيل',
+        message: 'هل أنت متأكد من حذف هذا التسجيل؟',
+        itemName: s.name,
+        onConfirm: async () => {
+          try {
+            const res = await fetch(`/api/submissions/${s.id}`, { method: 'DELETE' });
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+              showToast('فشل حذف التسجيل.', 'error');
+              return;
+            }
+            showToast('تم حذف التسجيل.', 'success');
+            loadAdminData();
+          } catch (err) {
+            console.error(err);
+            showToast('حصل خطأ أثناء حذف التسجيل.', 'error');
+          }
         }
-        showToast('تم حذف التسجيل.', 'success');
-        loadAdminData();
-      } catch (err) {
-        console.error(err);
-        showToast('حصل خطأ أثناء حذف التسجيل.', 'error');
-      }
+      });
     });
     footer.appendChild(del);
 
     card.appendChild(header);
     card.appendChild(meta);
-    if ((s.screenshot_urls || []).length > 0) {
+    if (screenshotUrls.length > 0) {
       card.appendChild(screenshotsWrap);
     }
     card.appendChild(footer);
@@ -522,17 +623,24 @@ function renderSettingsParticipants(list) {
 }
 
 async function deleteParticipant(participantName) {
-  try {
-    const submissions = allSubmissions.filter(s => s.name === participantName);
-    for (const subm of submissions) {
-      await fetch(`/api/submissions/${subm.id}`, { method: 'DELETE' });
+  confirmDelete({
+    title: 'حذف مشارك',
+    message: 'سيتم حذف جميع تسجيلات هذا المشارك. هل أنت متأكد؟',
+    itemName: participantName,
+    onConfirm: async () => {
+      try {
+        const submissions = allSubmissions.filter(s => s.name === participantName);
+        for (const subm of submissions) {
+          await fetch(`/api/submissions/${subm.id}`, { method: 'DELETE' });
+        }
+        showToast('تم حذف المشارك وكل تسجيلاته.', 'success');
+        loadAdminData();
+      } catch (err) {
+        console.error(err);
+        showToast('حصل خطأ أثناء حذف المشارك.', 'error');
+      }
     }
-    showToast('تم حذف المشارك وكل تسجيلاته.', 'success');
-    loadAdminData();
-  } catch (err) {
-    console.error(err);
-    showToast('حصل خطأ أثناء حذف المشارك.', 'error');
-  }
+  });
 }
 
 async function loadSettings() {
@@ -551,20 +659,20 @@ async function loadSettings() {
 // ==== Advanced Time Controls ====
 function updateTimeDisplay(settings) {
   if (!settings) return;
-  
+
   const startDateDisp = document.getElementById('startDateDisplay');
   const endDateDisp = document.getElementById('endDateDisplay');
   const daysDisp = document.getElementById('daysRemaining');
   const statusDisp = document.getElementById('statusDisplay');
-  
+
   if (!startDateDisp) return; // not on settings tab yet/element missing
-  
+
   const startDate = new Date(settings.start_date);
   const endDate = new Date(settings.end_date);
   const now = new Date();
-  
+
   const daysRemaining = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
-  
+
   startDateDisp.textContent = startDate.toLocaleDateString('ar-EG');
   endDateDisp.textContent = endDate.toLocaleDateString('ar-EG');
   daysDisp.textContent = daysRemaining > 0 ? daysRemaining : 'انتهت';
@@ -576,17 +684,17 @@ async function setDuration(days) {
     const response = await fetch('/api/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         action: 'set_duration',
-        days: days 
+        days: days
       })
     });
-    
+
     const data = await response.json();
     if (data.success) {
       showToast(`✅ تم تعيين مدة المسابقة لـ ${days} يوم`, 'success');
       loadSettings();
-      
+
       document.querySelectorAll('.duration-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.days == days) {
@@ -607,17 +715,17 @@ async function setCustomEndDate() {
     showToast('❌ اختر تاريخ أولاً', 'error');
     return;
   }
-  
+
   try {
     const response = await fetch('/api/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         action: 'set_end_date',
-        end_date: dateInput.value 
+        end_date: dateInput.value
       })
     });
-    
+
     const data = await response.json();
     if (data.success) {
       showToast('✅ تم تعيين تاريخ الانتهاء', 'success');
@@ -635,16 +743,16 @@ async function resetToDefault() {
     const response = await fetch('/api/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        action: 'reset_to_default' 
+      body: JSON.stringify({
+        action: 'reset_to_default'
       })
     });
-    
+
     const data = await response.json();
     if (data.success) {
       showToast('✅ تم إعادة التعيين لـ 30 يوم', 'success');
       loadSettings();
-      
+
       document.querySelectorAll('.duration-btn').forEach(btn => {
         btn.classList.remove('active');
         if (btn.dataset.days == 30) {
@@ -846,12 +954,12 @@ document.addEventListener('DOMContentLoaded', () => {
       setDuration(parseInt(btn.dataset.days));
     });
   });
-  
+
   const customDateBtn = document.getElementById('setCustomDateBtn');
   if (customDateBtn) {
     customDateBtn.addEventListener('click', setCustomEndDate);
   }
-  
+
   const resetBtn = document.getElementById('resetToDefaultBtn');
   if (resetBtn) {
     resetBtn.addEventListener('click', resetToDefault);
@@ -870,9 +978,9 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password: val })
       });
-      
+
       const data = await response.json();
-      
+
       if (data.success) {
         localStorage.setItem('adminLoggedIn', 'true');
         localStorage.setItem('comp_registered', 'true');
@@ -906,7 +1014,7 @@ document.addEventListener('DOMContentLoaded', () => {
     adminMain.style.display = 'block';
     loadAdminData();
   }
-  
+
   updateLogoutButton();
 });
 

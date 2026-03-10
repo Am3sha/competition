@@ -135,30 +135,52 @@ app.post('/api/submit', upload.array('screenshots'), async (req, res) => {
         // Upload files to Supabase Storage
         const files = req.files || [];
         const screenshotUrls = [];
+        const uploadErrors = [];
 
-        for (const file of files) {
-            const ext = path.extname(file.originalname) || '.jpg';
-            const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
+        if (files.length > 3) {
+            return res.status(400).json({ error: 'too_many_files', message: 'Maximum 3 files allowed' });
+        }
 
-            const { data: storageData, error: storageError } = await supabase.storage
-                .from('screenshots')
-                .upload(fileName, file.buffer, {
-                    contentType: file.mimetype,
-                    upsert: false,
-                });
+        if (files.length === 0) {
+            return res.status(400).json({ error: 'missing_files', message: 'At least 1 file is required' });
+        }
 
-            if (storageError) {
-                console.error('Storage upload error', storageError);
-                return res.status(500).json({ error: 'storage_upload_failed', details: storageError.message });
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            try {
+                const ext = path.extname(file.originalname) || '.jpg';
+                const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}${ext}`;
+
+                const { data: storageData, error: storageError } = await supabase.storage
+                    .from('screenshots')
+                    .upload(fileName, file.buffer, {
+                        contentType: file.mimetype,
+                        upsert: false,
+                    });
+
+                if (storageError) {
+                    console.error(`Error uploading file ${i + 1}:`, storageError);
+                    uploadErrors.push(`File ${i + 1}: ${storageError.message}`);
+                    continue;
+                }
+
+                const { data: publicData } = supabase.storage
+                    .from('screenshots')
+                    .getPublicUrl(storageData.path);
+
+                if (publicData?.publicUrl) {
+                    screenshotUrls.push(publicData.publicUrl);
+                } else {
+                    uploadErrors.push(`File ${i + 1}: Failed to get public URL`);
+                }
+            } catch (fileError) {
+                console.error(`Exception uploading file ${i + 1}:`, fileError);
+                uploadErrors.push(`File ${i + 1}: ${fileError.message}`);
             }
+        }
 
-            const { data: publicData } = supabase.storage
-                .from('screenshots')
-                .getPublicUrl(storageData.path);
-
-            if (publicData?.publicUrl) {
-                screenshotUrls.push(publicData.publicUrl);
-            }
+        if (screenshotUrls.length === 0) {
+            return res.status(500).json({ error: 'storage_upload_failed', details: 'All files failed to upload', errors: uploadErrors });
         }
 
         const { data, error } = await supabase
@@ -434,13 +456,58 @@ app.delete('/api/submissions/:id', async (req, res) => {
             return res.status(400).json({ error: 'invalid_submission_id' });
         }
 
+        // First, fetch the submission to get screenshot URLs
+        const { data: submission, error: fetchError } = await supabase
+            .from('submissions')
+            .select('screenshot_urls')
+            .eq('id', id)
+            .single();
+
+        if (fetchError) {
+            console.error('Fetch submission error', fetchError);
+            return res.status(500).json({ error: 'submission_fetch_failed', details: fetchError.message });
+        }
+
+        // Delete associated files from Supabase storage
+        let screenshotUrls = submission.screenshot_urls || [];
+        if (typeof screenshotUrls === 'string') {
+            try {
+                screenshotUrls = JSON.parse(screenshotUrls);
+            } catch (e) {
+                screenshotUrls = [];
+            }
+        }
+
+        // Extract file paths from URLs and delete them
+        if (Array.isArray(screenshotUrls) && screenshotUrls.length > 0) {
+            for (const url of screenshotUrls) {
+                try {
+                    const urlParts = url.split('/screenshots/');
+                    if (urlParts.length === 2) {
+                        const fileName = urlParts[1].split('?')[0];
+                        const { error: deleteError } = await supabase.storage
+                            .from('screenshots')
+                            .remove([fileName]);
+                        if (deleteError) {
+                            console.warn(`Warning: Failed to delete file ${fileName}:`, deleteError);
+                        } else {
+                            console.log(`Deleted file: ${fileName}`);
+                        }
+                    }
+                } catch (fileDeleteError) {
+                    console.warn('Error processing file deletion:', fileDeleteError);
+                }
+            }
+        }
+
+        // Finally, delete the database record
         const { error } = await supabase.from('submissions').delete().eq('id', id);
         if (error) {
-            console.error('Delete error', error);
+            console.error('Delete record error', error);
             return res.status(500).json({ error: 'submission_delete_failed', details: error.message });
         }
 
-        return res.json({ success: true, message: 'Submission deleted successfully' });
+        return res.json({ success: true, message: 'Submission and associated files deleted successfully' });
     } catch (err) {
         console.error('Delete submission error', err);
         return res.status(500).json({ error: 'server_error', details: err.message });
